@@ -1,0 +1,54 @@
+[
+  {
+    "key": "TYPE",
+    "value": "Type"
+  },
+  {
+    "key": "ACTIONS",
+    "value": "Actions"
+  },
+  {
+    "key": "DELETE",
+    "value": "Delete"
+  },
+  {
+    "key": "NAME",
+    "value": "Name"
+  },
+  {
+    "key": "CREATE",
+    "value": "Create"
+  },
+  {
+    "key": "CLOSE",
+    "value": "Close"
+  },
+  {
+    "key": "CREATE_CLUSTER",
+    "value": "Create Cluster"
+  },
+  {
+    "key": "CREATE_SERVER",
+    "value": "Create Server"
+  },
+  {
+    "key": "CREATE_POI",
+    "value": "Create Point of Interest"
+  },
+  {
+    "key": "MAP_TYPE",
+    "value": "Map Type"
+  },
+  {
+    "key": "MAP_NUMBER",
+    "value": "Map Number"
+  },
+  {
+    "key": "CLUSTERS",
+    "value": "Clusters"
+  },
+  {
+    "key": "SERVERS",
+    "value": "Servers"
+  }
+]
