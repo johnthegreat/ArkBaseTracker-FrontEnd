@@ -6,12 +6,15 @@ import {useEffect, useRef, useState} from "react";
 import PointOfInterest from "../../models/PointOfInterest";
 import PointOfInterestType from "../../models/enums/PointOfInterestType";
 
-const allianceStatuses = ['Allied', 'Friendly', 'Neutral', 'Hostile', 'Enemy'].sort();
+const allianceStatuses = ['Owned', 'Allied', 'Friendly', 'Neutral', 'Hostile', 'Enemy'].sort();
 const pointOfInterestTypes = ['Point of Interest', 'Base'];
 
 export default function CreatePointOfInterestModal(props: {
 	serverUuid: string,
-	onClose: Function
+	onClose: Function,
+	title?: string,
+	saveButtonLabel?: string,
+	existingPointOfInterest?: PointOfInterest
 }) {
 	const [showCreateModal, setShowCreateModal] = useState(true);
 	const [formError, setFormError] = useState<string>('');
@@ -60,7 +63,17 @@ export default function CreatePointOfInterestModal(props: {
 		if (formTypeField.current !== null) {
 			(formTypeField.current as HTMLSelectElement).focus();
 		}
-	}, []);
+
+		if (props.existingPointOfInterest !== undefined) {
+			setForm_Type(props.existingPointOfInterest.type);
+			setForm_OwnerName(props.existingPointOfInterest.ownerName);
+			setForm_AllianceStatus(props.existingPointOfInterest.allianceStatus);
+			setForm_Lat(props.existingPointOfInterest.lat);
+			setForm_Lng(props.existingPointOfInterest.lng);
+			setForm_Wiped(props.existingPointOfInterest.wiped);
+			setForm_Description(props.existingPointOfInterest.description || '');
+		}
+	}, [props.existingPointOfInterest]);
 
 	/*useEffect(() => {
 		if (createButton.current !== null) {
@@ -79,7 +92,7 @@ export default function CreatePointOfInterestModal(props: {
 	return (
 		<Modal show={showCreateModal} onHide={handleClose}>
 			<Modal.Header closeButton>
-				<Modal.Title>Create Point of Interest</Modal.Title>
+				<Modal.Title>{props.title || 'Create Point of Interest'}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				{formError ? <div className="alert alert-danger">{formError}</div> : <></>}
@@ -126,7 +139,7 @@ export default function CreatePointOfInterestModal(props: {
 
 					<div className="mb-3">
 						<label htmlFor="lat" className="form-label">Latitude</label>
-						<input required type="number" step={"0.01"}
+						<input required type="number" value={form_Lat} step={"0.1"}
 							   className={["form-control", !isFieldInDefaultState(form_Lat) && isValidLatOrLng(form_Lat!) ? "is-valid" : "is-invalid"].join(' ')}
 							   id="lat" onInput={
 							e => setForm_Lat(parseFloat((e.target as HTMLInputElement).value))
@@ -136,7 +149,7 @@ export default function CreatePointOfInterestModal(props: {
 
 					<div className="mb-3">
 						<label htmlFor="lng" className="form-label">Longitude</label>
-						<input required type="number" step={"0.01"}
+						<input required type="number" value={form_Lng} step={"0.1"}
 							   className={["form-control", !isFieldInDefaultState(form_Lng) && isValidLatOrLng(form_Lng!) ? "is-valid" : "is-invalid"].join(' ')}
 							   id="lng" onInput={
 							e => setForm_Lng(parseFloat((e.target as HTMLInputElement).value))
@@ -146,7 +159,7 @@ export default function CreatePointOfInterestModal(props: {
 
 					<div className="mb-3">
 						<label htmlFor="description" className="form-label">Description</label>
-						<textarea className="form-control" id="description" onInput={
+						<textarea className="form-control" value={form_Description} id="description" onInput={
 							e => setForm_Description((e.target as HTMLTextAreaElement).value)
 						} />
 						<div className="form-text">Optional</div>
@@ -158,7 +171,7 @@ export default function CreatePointOfInterestModal(props: {
 					Close
 				</Button>
 				<Button variant="primary" onClick={() => handleSaveAndClose()} ref={createButton} disabled={!isFormValid()}>
-					Create
+					{props.saveButtonLabel || 'Create'}
 				</Button>
 			</Modal.Footer>
 		</Modal>

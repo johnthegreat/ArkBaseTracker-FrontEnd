@@ -11,7 +11,7 @@ import getServerMapFromName from "../utils/getServerMapFromName";
 import CreatePointOfInterestModal from "../components/modals/CreatePointOfInterestModal";
 import ConfirmActionModal from "../components/modals/ConfirmActionModal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {faPencilAlt, faPlus, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
 
 // @ts-ignore
 const serverProvider = new ServerProvider(process.env.REACT_APP_API_BASE_URL);
@@ -25,6 +25,7 @@ export default function ServerDetail() {
 	const [filter, setFilter] = useState<string>('');
 	const [showCreatePointOfInterestModal, setShowCreatePointOfInterestModal] = useState(false);
 	const [pointOfInterestUuidPendingDeletion, setPointOfInterestUuidPendingDeletion] = useState<string | null>(null);
+	const [pointOfInterestUuidToEdit, setPointOfInterestUuidToEdit] = useState<string | null>(null);
 
 	const loadPointsOfInterest = useCallback(function(clusterUuid: string, serverUuid: string) {
 		pointOfInterestProvider.getPointsOfInterest(clusterUuid, serverUuid).then(function(_pointsOfInterest) {
@@ -46,10 +47,24 @@ export default function ServerDetail() {
 		});
 	}
 
+	function updatePointOfInterest(pointOfInterestUuid: string, pointOfInterest: PointOfInterest) {
+		pointOfInterestProvider.updatePointOfInterest(params.clusterUuid, params.serverUuid, pointOfInterestUuid, pointOfInterest).finally(function() {
+			loadPointsOfInterest(params.clusterUuid, params.serverUuid);
+		});
+	}
+
 	function deletePointOfInterest(pointOfInterestUuid: string) {
 		pointOfInterestProvider.deletePointOfInterest(params.clusterUuid, params.serverUuid, pointOfInterestUuid).finally(function() {
 			loadPointsOfInterest(params.clusterUuid, params.serverUuid);
 		});
+	}
+
+	function getPointOfInterestByUuid(pointOfInterestUuid: string) {
+		const pointOfInterestArr = pointsOfInterest.filter(pointOfInterest => pointOfInterest.uuid === pointOfInterestUuid);
+		if (pointOfInterestArr.length === 0) {
+			return undefined;
+		}
+		return pointOfInterestArr[0];
 	}
 
 	return (
@@ -59,10 +74,10 @@ export default function ServerDetail() {
 			<h1>Server Details</h1>
 
 			<div className="row">
-				<div className="col-md-5 mb-3">
+				<div className="col-md-5 col-lg-4 mb-3">
 					{server && <img src={"/maps/"+getServerMapFromName(server.mapType)} className="img-fluid" alt="" />}
 				</div>
-				<div className="col-md-7 mb-3">
+				<div className="col-md-7 col-lg-8 mb-3">
 					<div className="text-center pb-3">
 						<div className="btn-group" role="group" aria-label="Filter">
 							<button type="button" className={["btn", filter === 'Base' ? "btn-secondary" : "btn-primary"].join(' ')} onClick={() => setFilter('Base')}>Enemy Bases</button>
@@ -103,12 +118,18 @@ export default function ServerDetail() {
 										<td>
 											{pointOfInterest.ownerName}
 										</td>
-										<td>{pointOfInterest.allianceStatus}</td>
+										<td>{pointOfInterest.type === 'Base' ? pointOfInterest.allianceStatus : ''}</td>
 										<td>{pointOfInterest.wiped ? <button className="btn btn-sm btn-primary" disabled>Wiped</button> : <></>}</td>
-										<td>{pointOfInterest.lat}</td>
-										<td>{pointOfInterest.lng}</td>
-										<td>{pointOfInterest.description ? pointOfInterest.description : <i>N/A</i>}</td>
+										<td>{pointOfInterest.lat.toFixed(1)}</td>
+										<td>{pointOfInterest.lng.toFixed(1)}</td>
+										<td>{pointOfInterest.description ? pointOfInterest.description : <></>}</td>
 										<td style={{ whiteSpace: "nowrap" }}>
+											<button className={"btn btn-sm btn-primary"} onClick={() => setPointOfInterestUuidToEdit(pointOfInterest.uuid!)}>
+												<FontAwesomeIcon icon={faPencilAlt} /> Edit
+											</button>
+
+											&nbsp;
+
 											<button className="btn btn-sm btn-danger" onClick={() => setPointOfInterestUuidPendingDeletion(pointOfInterest.uuid!)}>
 												<FontAwesomeIcon icon={faTrashAlt} /> Delete
 											</button>
@@ -136,6 +157,22 @@ export default function ServerDetail() {
 					setShowCreatePointOfInterestModal(false);
 				}
 			} /> : <></>}
+
+			{pointOfInterestUuidToEdit ? <CreatePointOfInterestModal
+				title={'Update Point of Interest'}
+				saveButtonLabel={'Update'}
+				serverUuid={params.serverUuid}
+				existingPointOfInterest={getPointOfInterestByUuid(pointOfInterestUuidToEdit)}
+				onClose={
+					(pointOfInterest: PointOfInterest) => {
+						if (pointOfInterest) {
+							pointOfInterest.uuid = pointOfInterestUuidToEdit;
+							updatePointOfInterest(pointOfInterestUuidToEdit, pointOfInterest)
+						}
+						setPointOfInterestUuidToEdit(null);
+					}
+				}
+			/> : <></>}
 
 			{pointOfInterestUuidPendingDeletion && <ConfirmActionModal
                 title={"Delete Point of Interest"}

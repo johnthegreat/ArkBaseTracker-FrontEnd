@@ -54,9 +54,9 @@ export default function PointOfInterestDetail() {
 						<div className="card-header">Details</div>
 						<div className="card-body">
 							<p><b>Type:</b> {pointOfInterest?.type}</p>
-							<p><b>Owner Name:</b> {pointOfInterest?.ownerName}</p>
+							{pointOfInterest?.type === 'Base' ? <p><b>Owner Name:</b> {pointOfInterest?.ownerName}</p> : <></>}
 							<p><b>Alliance Status:</b> {pointOfInterest?.allianceStatus}</p>
-							<p><b>Wiped:</b> {pointOfInterest?.wiped ? 'Yes' : 'No'}</p>
+							{pointOfInterest?.type === 'Base' ? <p><b>Wiped:</b> {pointOfInterest?.wiped ? 'Yes' : 'No'}</p> : <></>}
 							<p><b>Lat:</b> {pointOfInterest?.lat}</p>
 							<p><b>Lng:</b> {pointOfInterest?.lng}</p>
 							<p><b>Description:</b> {pointOfInterest?.description ? pointOfInterest?.description : <em>N/A</em>}</p>
