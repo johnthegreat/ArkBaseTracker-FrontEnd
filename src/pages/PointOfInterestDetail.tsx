@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import {useEffect, useState, useCallback} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import PointOfInterest from "../models/PointOfInterest";
 import PointOfInterestAttachment from "../models/PointOfInterestAttachment";
 import PointOfInterestProvider from "../apis/providers/PointOfInterestProvider";
@@ -44,7 +44,7 @@ export default function PointOfInterestDetail() {
 
 	return (
 		<>
-			<a href={"/cluster/"+params.clusterUuid+"/server/"+params.serverUuid}>Back to Server</a>
+			<Link to={"/cluster/"+params.clusterUuid+"/server/"+params.serverUuid}>Back to Server</Link>
 
 			<h1>Point of Interest Details</h1>
 

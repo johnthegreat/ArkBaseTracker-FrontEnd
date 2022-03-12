@@ -69,7 +69,7 @@ export default function ServerDetail() {
 
 	return (
 		<>
-			<a href={"/cluster/"+params.clusterUuid}>Back to Servers</a>
+			<Link to={"/cluster/"+params.clusterUuid}>Back to Servers</Link>
 
 			<h1>Server Details</h1>
 
