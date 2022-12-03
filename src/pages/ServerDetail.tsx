@@ -11,7 +11,7 @@ import getServerMapFromName from "../utils/getServerMapFromName";
 import CreatePointOfInterestModal from "../components/modals/CreatePointOfInterestModal";
 import ConfirmActionModal from "../components/modals/ConfirmActionModal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPencilAlt, faPlus, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
+import {faInfoCircle, faPencilAlt, faPlus, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
 
 // @ts-ignore
 const serverProvider = new ServerProvider(process.env.REACT_APP_API_BASE_URL);
@@ -78,17 +78,24 @@ export default function ServerDetail() {
 					{server && <img src={"/maps/"+getServerMapFromName(server.mapType)} className="img-fluid" alt="" />}
 				</div>
 				<div className="col-md-7 col-lg-8 mb-3">
-					<div className="text-center pb-3">
-						<div className="btn-group" role="group" aria-label="Filter">
-							<button type="button" className={["btn", filter === 'Base' ? "btn-secondary" : "btn-primary"].join(' ')} onClick={() => setFilter('Base')}>Enemy Bases</button>
-							<button type="button" className={["btn", filter === 'Point of Interest' ? "btn-secondary" : "btn-primary"].join(' ')} onClick={() => setFilter('Point of Interest')}>Points of Interest</button>
-							<button type="button" className={["btn", filter === '' ? "btn-secondary" : "btn-primary"].join(' ')} onClick={() => setFilter('')}>Clear Filters</button>
-						</div>
-					</div>
 
-					<div className="table-responsive">
-						<table className="table table-bordered table-striped">
-							<thead>
+
+					{pointsOfInterest.length === 0 ? <div className={"alert alert-primary"}>
+						<FontAwesomeIcon icon={faInfoCircle} /> No Points of Interest yet.
+					</div> : <></>}
+
+					{pointsOfInterest.length > 0 ? <>
+						<div className="text-center pb-3">
+							<div className="btn-group" role="group" aria-label="Filter">
+								<button type="button" className={["btn", filter === 'Base' ? "btn-secondary" : "btn-primary"].join(' ')} onClick={() => setFilter('Base')}>Enemy Bases</button>
+								<button type="button" className={["btn", filter === 'Point of Interest' ? "btn-secondary" : "btn-primary"].join(' ')} onClick={() => setFilter('Point of Interest')}>Points of Interest</button>
+								<button type="button" className={["btn", filter === '' ? "btn-secondary" : "btn-primary"].join(' ')} onClick={() => setFilter('')}>Clear Filters</button>
+							</div>
+						</div>
+
+						<div className="table-responsive">
+							<table className="table table-bordered table-striped">
+								<thead>
 								<tr>
 									<th />
 									<th>Type</th>
@@ -100,46 +107,47 @@ export default function ServerDetail() {
 									<th>Description</th>
 									<th>Actions</th>
 								</tr>
-							</thead>
-							<tbody>
-							{pointsOfInterest.map((pointOfInterest) => {
-								if (filter !== '' && pointOfInterest.type !== filter) {
-									return null;
-								}
+								</thead>
+								<tbody>
+								{pointsOfInterest.map((pointOfInterest) => {
+									if (filter !== '' && pointOfInterest.type !== filter) {
+										return null;
+									}
 
-								return (
-									<tr key={pointOfInterest.uuid} id={pointOfInterest.uuid}>
-										<td>
-											<Link to={"/cluster/"+params.clusterUuid+"/server/"+params.serverUuid+"/point-of-interest/"+pointOfInterest.uuid}>
-												View
-											</Link>
-										</td>
-										<td style={{ whiteSpace: "nowrap" }}>{pointOfInterest.type}</td>
-										<td>
-											{pointOfInterest.ownerName}
-										</td>
-										<td>{pointOfInterest.type === 'Base' ? pointOfInterest.allianceStatus : ''}</td>
-										<td>{pointOfInterest.wiped ? <button className="btn btn-sm btn-primary" disabled>Wiped</button> : <></>}</td>
-										<td>{pointOfInterest.lat.toFixed(1)}</td>
-										<td>{pointOfInterest.lng.toFixed(1)}</td>
-										<td>{pointOfInterest.description ? pointOfInterest.description : <></>}</td>
-										<td style={{ whiteSpace: "nowrap" }}>
-											<button className={"btn btn-sm btn-primary"} onClick={() => setPointOfInterestUuidToEdit(pointOfInterest.uuid!)}>
-												<FontAwesomeIcon icon={faPencilAlt} /> Edit
-											</button>
+									return (
+										<tr key={pointOfInterest.uuid} id={pointOfInterest.uuid}>
+											<td>
+												<Link to={"/cluster/"+params.clusterUuid+"/server/"+params.serverUuid+"/point-of-interest/"+pointOfInterest.uuid}>
+													View
+												</Link>
+											</td>
+											<td style={{ whiteSpace: "nowrap" }}>{pointOfInterest.type}</td>
+											<td>
+												{pointOfInterest.ownerName}
+											</td>
+											<td>{pointOfInterest.type === 'Base' ? pointOfInterest.allianceStatus : ''}</td>
+											<td>{pointOfInterest.wiped ? <button className="btn btn-sm btn-primary" disabled>Wiped</button> : <></>}</td>
+											<td>{pointOfInterest.lat.toFixed(1)}</td>
+											<td>{pointOfInterest.lng.toFixed(1)}</td>
+											<td>{pointOfInterest.description ? pointOfInterest.description : <></>}</td>
+											<td style={{ whiteSpace: "nowrap" }}>
+												<button className={"btn btn-sm btn-primary"} onClick={() => setPointOfInterestUuidToEdit(pointOfInterest.uuid!)}>
+													<FontAwesomeIcon icon={faPencilAlt} /> Edit
+												</button>
 
-											&nbsp;
+												&nbsp;
 
-											<button className="btn btn-sm btn-danger" onClick={() => setPointOfInterestUuidPendingDeletion(pointOfInterest.uuid!)}>
-												<FontAwesomeIcon icon={faTrashAlt} /> Delete
-											</button>
-										</td>
-									</tr>
-								);
-							})}
-							</tbody>
-						</table>
-					</div>
+												<button className="btn btn-sm btn-danger" onClick={() => setPointOfInterestUuidPendingDeletion(pointOfInterest.uuid!)}>
+													<FontAwesomeIcon icon={faTrashAlt} /> Delete
+												</button>
+											</td>
+										</tr>
+									);
+								})}
+								</tbody>
+							</table>
+						</div>
+					</> : <></>}
 
 					<div className="mt-3 float-end">
 						<button className="btn btn-primary" onClick={() => setShowCreatePointOfInterestModal(true)}>

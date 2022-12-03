@@ -4,7 +4,7 @@
 import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import App from './pages/App';
-import {BrowserRouter as Router, Route, Routes, useNavigate, } from "react-router-dom";
+import {BrowserRouter as Router, Route, Routes, useNavigate} from "react-router-dom";
 import ClusterIndex from "./pages/ClusterIndex";
 import ServerIndex from "./pages/ServerIndex";
 import ServerDetail from "./pages/ServerDetail";

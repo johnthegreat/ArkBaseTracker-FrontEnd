@@ -66,7 +66,7 @@ export default function CreateClusterModal(props: {
 
 					<div className="mb-3">
 						<label htmlFor="type" className="form-label">Type</label>
-						<select required value={createModalForm_Type} id="type" className="form-control" onChange={
+						<select required value={createModalForm_Type} id="type" className="form-select" onChange={
 							e => setCreateModalForm_Type((e.target as HTMLSelectElement).value)
 						}>
 							{props.clusterTypes.map((clusterType: ClusterType) => {

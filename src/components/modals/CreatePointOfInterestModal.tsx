@@ -99,7 +99,7 @@ export default function CreatePointOfInterestModal(props: {
 				<form id="createPointOfInterestModalForm needs-validation">
 					<div className="mb-3">
 						<label htmlFor="type" className="form-label">Type</label>
-						<select required ref={formTypeField} value={form_Type} id="type" className="form-control is-valid" onChange={
+						<select required ref={formTypeField} value={form_Type} id="type" className="form-select is-valid" onChange={
 							e => setForm_Type((e.target as HTMLSelectElement).value)
 						}>
 							{pointOfInterestTypes.map((type) => {
@@ -119,7 +119,7 @@ export default function CreatePointOfInterestModal(props: {
 
 					{form_Type === 'Base' ? <div className="mb-3">
 						<label htmlFor="allianceStatus" className="form-label">Alliance Status</label>
-						<select value={form_AllianceStatus} id="allianceStatus" className="form-control is-valid" onChange={
+						<select value={form_AllianceStatus} id="allianceStatus" className="form-select is-valid" onChange={
 							e => setForm_AllianceStatus((e.target as HTMLSelectElement).value)
 						}>
 							{allianceStatuses.map((allianceStatus) => {

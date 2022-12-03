@@ -7,7 +7,7 @@ import ServerProvider from "../apis/providers/ServerProvider";
 import Server from "../models/Server";
 import CreateServerModal from "../components/modals/CreateServerModal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {faExclamationCircle, faInfoCircle, faPlus, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
 import ConfirmActionModal from "../components/modals/ConfirmActionModal";
 
 // @ts-ignore
@@ -18,10 +18,13 @@ export default function ServerIndex() {
 	const [servers, setServers] = useState<Server[]>([]);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [serverUuidPendingDeletion, setServerUuidPendingDeletion] = useState<string>();
+	const [errorMessage, setErrorMessage] = useState<string>('');
 
 	const loadServers = function(clusterUuid: string) {
 		serverProvider.getServers(clusterUuid).then(function (_servers) {
 			setServers(_servers);
+		}).catch(function() {
+			setErrorMessage('An error occurred loading servers.');
 		});
 	};
 
@@ -41,9 +44,12 @@ export default function ServerIndex() {
 
 			<h1>Servers</h1>
 
-			<div className="list-group">
-				{servers.length === 0 ? "No servers yet" : ""}
-				{servers.length > 0 ? servers.map((server) => {
+			{errorMessage && servers.length === 0 ? <div className={"alert alert-danger"}>
+				<FontAwesomeIcon icon={faExclamationCircle} /> {errorMessage}
+			</div> : <></>}
+
+			{servers.length > 0 ? <div className="list-group">
+				{servers.map((server) => {
 					return (
 						<div className="list-group-item" key={server.uuid} id={server.uuid}>
 							<Link to={"/cluster/"+server.clusterUuid+"/server/"+server.uuid}>
@@ -55,8 +61,12 @@ export default function ServerIndex() {
 							</button>
 						</div>
 					);
-				}) : <></>}
-			</div>
+				})}
+			</div> : <></>}
+
+			{!errorMessage && servers.length === 0 ? <div className={"alert alert-primary"}>
+				<FontAwesomeIcon icon={faInfoCircle} /> No servers yet.
+			</div> : <></>}
 
 			<div className="mt-3 float-end">
 				<button className="btn btn-primary" onClick={() => setShowCreateModal(true)}>

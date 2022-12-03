@@ -65,7 +65,7 @@ export default function CreateServerModal(props: {
 
 					<div className="mb-3">
 						<label htmlFor="mapType" className="form-label">Map Type</label>
-						<select value={formMapType} required id="mapType" className="form-control" onChange={
+						<select value={formMapType} required id="mapType" className="form-select" onChange={
 							(e) => setFormMapType(e.target.value)
 						}>
 							{supportedMaps.map((map) => {

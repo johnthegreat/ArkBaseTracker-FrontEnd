@@ -75,7 +75,7 @@ export default function PointOfInterestDetail() {
 								{pointOfInterestAttachments.map(function(pointOfInterestAttachment) {
 									return (
 										<div className="col-md-6 col-xl-4 text-center mb-3" key={pointOfInterestAttachment.uuid}>
-											<a target="_blank" rel="noreferrer" href={process.env.REACT_APP_API_BASE_URL+"/upload/"+pointOfInterestAttachment.uuid}>
+											<a target="_blank" rel="noopener noreferrer" href={process.env.REACT_APP_API_BASE_URL+"/upload/"+pointOfInterestAttachment.uuid}>
 												<img className="mb-3 img-fluid w-100" src={process.env.REACT_APP_API_BASE_URL+"/upload/"+pointOfInterestAttachment.uuid+"/thumbnail/"+thumbnailDimensions} alt={pointOfInterestAttachment.originalFileName} />
 											</a>
 

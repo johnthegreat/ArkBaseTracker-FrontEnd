@@ -11,7 +11,7 @@ import localizationService from "../LocalizationService";
 import getDefaultLocale from "../getDefaultLocale";
 import ConfirmActionModal from "../components/modals/ConfirmActionModal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationCircle, faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 // @ts-ignore
 const clusterProvider = new ClusterProvider(process.env.REACT_APP_API_BASE_URL);
@@ -24,11 +24,14 @@ export default function ClusterIndex() {
 	const [clusters, setClusters] = useState<Cluster[]>([]);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [clusterUuidPendingDeletion, setClusterUuidPendingDeletion] = useState<string | null>(null);
+	const [errorMessage, setErrorMessage] = useState<string>('');
 
 	function loadClusters() {
 		return clusterProvider.getClusters().then(function(_clusters) {
 			console.log(_clusters);
 			setClusters(_clusters);
+		}).catch(function() {
+			setErrorMessage('An error occurred loading clusters.');
 		});
 	}
 
@@ -41,6 +44,10 @@ export default function ClusterIndex() {
 	return (
 		<>
 			<h1>{getLocalizedValue(getDefaultLocale(), "CLUSTERS")}</h1>
+
+			{errorMessage && clusters.length === 0 ? <div className={"alert alert-danger"}>
+				<FontAwesomeIcon icon={faExclamationCircle} /> {errorMessage}
+			</div> : <></>}
 
 			<div className="table-responsive">
 				<table className="table table-bordered table-striped">
